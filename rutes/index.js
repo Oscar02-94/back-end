@@ -26,7 +26,7 @@ router.get('/register', (req, res) => {
 });
 
 router.post('/registro',  (req, res) => {
-    console.log(req.body, '<<<<------- registro')
+    //console.log(req.body, '<<<<------- registro')
     const user = new User();
     if(req){
         user.email = req.body.email,
@@ -34,7 +34,7 @@ router.post('/registro',  (req, res) => {
         user.password = req.body.password
 
         user.save().then(result => {
-            console.log(result, 'hgggg')
+            //console.log(result, 'hgggg')
     
             res.send({
                 status: 200,
