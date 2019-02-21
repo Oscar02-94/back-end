@@ -17,6 +17,16 @@ app.set('port',process.env.PORT || 4000);
 app.use(parser.urlencoded({ extended: true }))
 app.use(parser.json())
 
+//corse
+// acceso alas peticiones del front-end
+app.use((req, res, next) => {
+    res.header('Access-Control-Allow-Origin', '*');
+    res.header('Access-Control-Allow-Headers', 'Authorization, X-API-KEY, Origin, X-Requested-With, Content-Type, Accept, Access-Control-Allow-Request-Method');
+    res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, DELETE');
+    res.header('Allow', 'GET, POST, OPTIONS, PUT, DELETE');
+    next();
+});
+
 
 //variable gobal
 
