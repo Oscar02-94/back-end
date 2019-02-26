@@ -1,5 +1,6 @@
 // realizamos la encrytacion de la contraseña
 // usamos un callback 
+'use strict';
 const bcrypt = require ('bcrypt-nodejs');
 
 module.exports = (password, cb) => {

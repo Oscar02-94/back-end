@@ -1,12 +1,14 @@
+'use strict';
 
 const { Schema, model } = require ('mongoose');
 const bcrypt = require ('bcrypt-nodejs');
 const encrypt = require('./encriptacion')
 
 const UserSchema = new Schema({
-    email: { type: String, unique: true, lowercase: true },
-    displeyName: { type: String },
-    password: { type: String, select: false }
+    //agregando validaciones 
+    email: { type: String, unique: true, lowercase: true,required:" El email es necesario" },
+    displeyName: { type: String,required:false, maxlength:[30,"usuario muy grande"] },
+    password: { type: String,required: true,minlength:[7,"la contraseña es muy corta"],select: true }
 });
 
 // realizamos la encrytacion de la contraseña

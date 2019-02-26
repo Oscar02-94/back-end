@@ -1,7 +1,9 @@
+'use strict';
 const { Router } = require ('express');
 const router = Router();
 
 const User = require('../model/user');
+const bcrypt = require('bcrypt-nodejs');
 
 const encriptacion = require('../model/encriptacion');
 
@@ -13,45 +15,64 @@ router.get('/subida', (req, res) => {
     res.send('ya esta el server')
 });
 
-router.post('/login',  async (req, res) => {
-   //const user = new user();
-   //user.email = req.body.email,
-   //user.displeyName = req.body.displeyName
+router.post('/login',  (sol, res) => {
+    const { email, displeyName, password } = sol.body
 
-   //await user.save();
+    User.findOne({ email })
+    .then(result => {
+        if(result !== null) {
+            bcrypt.compare(password, result.password, (err, response) => {
+                if(err) throw err
+                console.log(result)
+                if(response = true) {
+                    return res.json({
+                        message: 'usuario logueado'
+                    })
+                }
+                //console.log(result)
+                return res.json({
+                    message: 'La contraseña es incorrecta'
+                });
+            })
+            
+        } else {
+            return res.json({
+                message: 'El correo no existe'
+            })
+        }
+    })
+    .catch(err => {
+        return res.json(err)
+    })
+
+   
 });
 
-router.get('/register', (req, res) => {
-    res.send('register');
-});
+//router.get('/register', (req, res) => {
+  //  res.send('register');
+//});
 
-router.post('/registro',  (req, res) => {
+router.post('/registro',  (sol, res) => {
     //console.log(req.body, '<<<<------- registro')
-    const user = new User();
-    if(req){
-        user.email = req.body.email,
-        user.displeyName = req.body.displayName,
-        user.password = req.body.password
+const { email, displeyName, password,  } = sol.body 
+bcrypt.genSalt(10, (er, salt) => {
+    if (er) throw er
+    bcrypt.hash(password, salt, null,(err, hash) => {
+        if (err) throw err
 
-        user.save().then(result => {
-            //console.log(result, 'hgggg')
-    
-            res.send({
-                status: 200,
-                message: 'usuario creado'
-            })
-        }).catch(err => {
-            console.log(err, 'uuuu');
-            res.send({
-                status: 500,
-                message: 'error al crar usuario'
-            })
-        });
-    }else{
-        res.send({status: 500, message:'No vienen los datos'})
-    }
- 
-
+        //ceramos el usuario
+        User.create ({
+            email,
+            displeyName,
+            password: hash
+        }).then(r => res.json(r))
+        //aqui pasamos por el .then para una respuesta
+        .catch( error => {
+            return res.json(error)
+            //el .catch lo usamos para cachar algun error y si lo hay que nos lo pinte por consola
+        })
+    })  
+})
 
 })
 
